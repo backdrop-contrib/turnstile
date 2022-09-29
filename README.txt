@@ -12,7 +12,7 @@ more information on what Turnstile is, please visit:
 REQUIREMENTS
 ------------
 
-* hCaptcha module depends on the CAPTCHA module.
+* Turnstile module depends on the CAPTCHA module.
   https://drupal.org/project/captcha
 
 
