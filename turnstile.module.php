@@ -1,0 +1,120 @@
+<?php
+
+/**
+ * @file
+ * Verifies if user is a human without necessity to solve a CAPTCHA.
+ */
+
+use Drupal\turnstile\Turnstile\Drupal8Post;
+use Drupal\turnstile\Turnstile\Turnstile;
+use Drupal\Core\Url;
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_captcha().
+ */
+function turnstile_captcha($op, $captcha_type = '') {
+
+  switch ($op) {
+    case 'list':
+      return ['Turnstile'];
+
+    case 'generate':
+      $captcha = [];
+      if ($captcha_type == 'Turnstile') {
+        $config = \Drupal::config('turnstile.settings');
+        $renderer = \Drupal::service('renderer');
+        $turnstile_site_key = $config->get('site_key');
+        $turnstile_secret_key = $config->get('secret_key');
+
+        if (!empty($turnstile_site_key) && !empty($turnstile_secret_key)) {
+          $attributes = [
+            'class' => 'h-captcha',
+            'data-sitekey' => $turnstile_site_key,
+            'data-theme' => $config->get('widget.theme'),
+            'data-size' => $config->get('widget.size'),
+            'data-tabindex' => $config->get('widget.tabindex'),
+          ];
+          $turnstile = new Turnstile($turnstile_site_key, $turnstile_secret_key, $attributes);
+          $captcha = $turnstile->getWidget('turnstile_captcha_validation');
+
+          $turnstile_src = $config->get('turnstile_src');
+          $captcha['form']['turnstile_widget']['#attached'] = [
+            'html_head' => [
+              [
+                [
+                  '#tag' => 'script',
+                  '#attributes' => [
+                    'src' => Url::fromUri($turnstile_src, ['query' => ['hl' => \Drupal::service('language_manager')->getCurrentLanguage()->getId()], 'absolute' => true])->toString(),
+                    'async' => true,
+                    'defer' => true,
+                  ],
+                ],
+                'turnstile_api',
+              ],
+            ],
+          ];
+        }
+        else {
+          // Fallback to Math captcha as Turnstile is not configured.
+          $captcha = captcha_captcha('generate', 'Math');
+        }
+
+        // If module configuration changes the form cache need to be refreshed.
+        $renderer->addCacheableDependency($captcha['form'], $config);
+      }
+      return $captcha;
+  }
+}
+
+/**
+ * CAPTCHA Callback; Validates the Turnstile code.
+ */
+function turnstile_captcha_validation($solution, $response, $element, $form_state) {
+  $config = \Drupal::config('turnstile.settings');
+
+  $turnstile_site_key = $config->get('site_key');
+  $turnstile_secret_key = $config->get('secret_key');
+
+  if (!isset($_POST['h-captcha-response']) || empty($_POST['h-captcha-response']) || empty($turnstile_secret_key)) {
+    return false;
+  }
+
+  $captcha = new Turnstile($turnstile_site_key, $turnstile_secret_key, [], new Drupal8Post());
+  $captcha->validate($_POST['h-captcha-response'], \Drupal::request()->getClientIp());
+
+  if ($captcha->isSuccess()) {
+    // Verified!
+    return true;
+  }
+  else {
+    foreach ($captcha->getErrors() as $error) {
+      \Drupal::logger('turnstile')->error('@error', ['@error' => $error]);
+    }
+  }
+  return false;
+}
+
+/**
+ * Implements hook_help().
+ */
+function turnstile_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+
+    case 'help.page.turnstile':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= t('<p>Cloudflare Turnstile delivers frustration-free, CAPTCHA-free web experiences to website visitors - with just a simple snippet of free code.</p><p>What\'s more, Turnstile stops abuse and confirms visitors are real without the data privacy concerns or awful UX that CAPTCHAs thrust on users.</p>');
+
+      // Add a link to the Drupal.org project.
+      $output .= '<p>';
+      $output .= t('Visit the <a href=":project_link">Turnstile project page</a> on Drupal.org for more information.',[
+        ':project_link' => 'https://www.drupal.org/project/turnstile'
+        ]);
+      $output .= '</p>';
+
+      return $output;
+
+    default:
+  }
+}
