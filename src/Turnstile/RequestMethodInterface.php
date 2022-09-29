@@ -17,7 +17,7 @@ interface RequestMethodInterface {
    * @return object
    *   Body of the Turnstile response
    */
-  
+
   public function submit($url, array $params);
 
 }

@@ -12,7 +12,8 @@ class Turnstile {
   const SITE_VERIFY_URL = 'https://challenges.cloudflare.com/turnstile/v0/siteverify';
 
   /**
-   * Sets the attributes
+   * Sets the attributes.
+   * @var attributes
    */
   protected $attributes = [
     'class' => 'cf-turnstile',
@@ -24,31 +25,37 @@ class Turnstile {
 
   /**
    * Sets the site key.
+   * @var siteKey
    */
   protected $siteKey = '';
 
   /**
    * Sets the secret key.
+   * @var secretKey
    */
   protected $secretKey = '';
 
   /**
    * Sets the errors array.
+   * @var errors
    */
   protected $errors = [];
 
   /**
    * Sets the success flag.
+   * @var success
    */
   private $success = FALSE;
 
   /**
    * Sets the validated flag.
+   * @var validated
    */
   private $validated;
 
   /**
    * Sets the request method.
+   * @var requestMethod
    */
   private $requestMethod;
 
