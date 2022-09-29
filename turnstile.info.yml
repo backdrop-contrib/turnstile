@@ -8,4 +8,4 @@ core_version_requirement: ^9.4 || ^10
 configure: turnstile.admin_settings_form
 
 dependencies:
-  - catpcha:catpcha
+  - captcha:captcha
