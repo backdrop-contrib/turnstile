@@ -9,6 +9,7 @@ use Drupal\turnstile\Turnstile\Drupal8Post;
 use Drupal\turnstile\Turnstile\Turnstile;
 use Drupal\Core\Url;
 use Drupal\Core\Routing\RouteMatchInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * Implements hook_captcha().
@@ -29,7 +30,7 @@ function turnstile_captcha($op, $captcha_type = '') {
 
         if (!empty($turnstile_site_key) && !empty($turnstile_secret_key)) {
           $attributes = [
-            'class' => 'h-captcha',
+            'class' => 'cf-turnstile-,
             'data-sitekey' => $turnstile_site_key,
             'data-theme' => $config->get('widget.theme'),
             'data-size' => $config->get('widget.size'),
@@ -45,9 +46,14 @@ function turnstile_captcha($op, $captcha_type = '') {
                 [
                   '#tag' => 'script',
                   '#attributes' => [
-                    'src' => Url::fromUri($turnstile_src, ['query' => ['hl' => \Drupal::service('language_manager')->getCurrentLanguage()->getId()], 'absolute' => true])->toString(),
-                    'async' => true,
-                    'defer' => true,
+                    'src' => Url::fromUri($turnstile_src, [
+                      'query' => [
+                        'hl' => \Drupal::service('language_manager')->getCurrentLanguage()->getId(),
+                      ],
+                      'absolute' => TRUE,
+                    ])->toString(),
+                    'async' => TRUE,
+                    'defer' => TRUE,
                   ],
                 ],
                 'turnstile_api',
@@ -76,23 +82,23 @@ function turnstile_captcha_validation($solution, $response, $element, $form_stat
   $turnstile_site_key = $config->get('site_key');
   $turnstile_secret_key = $config->get('secret_key');
 
-  if (!isset($_POST['h-captcha-response']) || empty($_POST['h-captcha-response']) || empty($turnstile_secret_key)) {
-    return false;
+  if (!isset($stack->getCurrentRequest()->request->get('cf-turnstile-response')) || empty($stack->getCurrentRequest()->request->get('cf-turnstile-response')) || empty($turnstile_secret_key)) {
+    return FALSE;
   }
 
   $captcha = new Turnstile($turnstile_site_key, $turnstile_secret_key, [], new Drupal8Post());
-  $captcha->validate($_POST['h-captcha-response'], \Drupal::request()->getClientIp());
+  $captcha->validate($stack->getCurrentRequest()->request->get('cf-turnstile-response'), \Drupal::request()->getClientIp());
 
   if ($captcha->isSuccess()) {
     // Verified!
-    return true;
+    return TRUE;
   }
   else {
     foreach ($captcha->getErrors() as $error) {
       \Drupal::logger('turnstile')->error('@error', ['@error' => $error]);
     }
   }
-  return false;
+  return FALSE;
 }
 
 /**
@@ -104,12 +110,12 @@ function turnstile_help($route_name, RouteMatchInterface $route_match) {
     case 'help.page.turnstile':
       $output = '';
       $output .= '<h3>' . t('About') . '</h3>';
-      $output .= t('<p>Cloudflare Turnstile delivers frustration-free, CAPTCHA-free web experiences to website visitors - with just a simple snippet of free code.</p><p>What\'s more, Turnstile stops abuse and confirms visitors are real without the data privacy concerns or awful UX that CAPTCHAs thrust on users.</p>');
+      $output .= t("<p>Cloudflare Turnstile delivers frustration-free, CAPTCHA-free web experiences to website visitors - with just a simple snippet of free code.</p><p>What's more, Turnstile stops abuse and confirms visitors are real without the data privacy concerns or awful UX that CAPTCHAs thrust on users.</p>");
 
       // Add a link to the Drupal.org project.
       $output .= '<p>';
       $output .= t('Visit the <a href=":project_link">Turnstile project page</a> on Drupal.org for more information.',[
-        ':project_link' => 'https://www.drupal.org/project/turnstile'
+        ':project_link' => 'https://www.drupal.org/project/turnstile',
         ]);
       $output .= '</p>';
 

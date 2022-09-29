@@ -34,14 +34,14 @@ class TurnstileAdminSettingsForm extends ConfigFormBase {
     $form['general'] = [
       '#type' => 'details',
       '#title' => $this->t('General settings'),
-      '#open' => true,
+      '#open' => TRUE,
     ];
 
     $form['general']['turnstile_site_key'] = [
       '#default_value' => $config->get('site_key'),
       '#description' => $this->t('The site key given to you when you <a href=":url">register for Turnstile</a>.', [':url' => 'https://cloudflare.com']),
       '#maxlength' => 50,
-      '#required' => true,
+      '#required' => TRUE,
       '#title' => $this->t('Site key'),
       '#type' => 'textfield',
     ];
@@ -50,7 +50,7 @@ class TurnstileAdminSettingsForm extends ConfigFormBase {
       '#default_value' => $config->get('secret_key'),
       '#description' => $this->t('The secret key given to you when you <a href=":url">register for Turnstile</a>.', [':url' => 'https://cloudflare.com']),
       '#maxlength' => 50,
-      '#required' => true,
+      '#required' => TRUE,
       '#title' => $this->t('Secret key'),
       '#type' => 'textfield',
     ];
@@ -59,7 +59,7 @@ class TurnstileAdminSettingsForm extends ConfigFormBase {
       '#default_value' => $config->get('turnstile_src'),
       '#description' => $this->t('Default URL is ":url".', [':url' => 'https://challenges.cloudflare.com/turnstile/v0/api.js']),
       '#maxlength' => 200,
-      '#required' => true,
+      '#required' => TRUE,
       '#title' => $this->t('Turnstile javascript resource URL'),
       '#type' => 'textfield',
     ];
@@ -68,7 +68,7 @@ class TurnstileAdminSettingsForm extends ConfigFormBase {
     $form['widget'] = [
       '#type' => 'details',
       '#title' => $this->t('Widget settings'),
-      '#open' => true,
+      '#open' => TRUE,
     ];
     $form['widget']['turnstile_theme'] = [
       '#default_value' => $config->get('widget.theme'),
@@ -81,16 +81,7 @@ class TurnstileAdminSettingsForm extends ConfigFormBase {
       '#title' => $this->t('Theme'),
       '#type' => 'select',
     ];
-    // $form['widget']['turnstile_size'] = [
-    //   '#default_value' => $config->get('widget.size'),
-    //   '#description' => $this->t('The size of CAPTCHA to serve.'),
-    //   '#options' => [
-    //     '' => $this->t('Normal (default)'),
-    //     'compact' => $this->t('Compact'),
-    //   ],
-    //   '#title' => $this->t('Size'),
-    //   '#type' => 'select',
-    // ];
+
     $form['widget']['turnstile_tabindex'] = [
       '#default_value' => $config->get('widget.tabindex'),
       '#description' => $this->t('Set the <a href=":tabindex">tabindex</a> of the widget and challenge (Default = 0). If other elements in your page use tabindex, it should be set to make user navigation easier.', [':tabindex' => Url::fromUri('https://www.w3.org/TR/html4/interact/forms.html', ['fragment' => 'adef-tabindex'])->toString()]),
@@ -112,7 +103,6 @@ class TurnstileAdminSettingsForm extends ConfigFormBase {
       ->set('site_key', $form_state->getValue('turnstile_site_key'))
       ->set('secret_key', $form_state->getValue('turnstile_secret_key'))
       ->set('widget.theme', $form_state->getValue('turnstile_theme'))
-      // ->set('widget.size', $form_state->getValue('turnstile_size'))
       ->set('widget.tabindex', $form_state->getValue('turnstile_tabindex'))
       ->save();
 

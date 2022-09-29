@@ -2,15 +2,20 @@
 
 namespace Drupal\turnstile\Turnstile;
 
+use \Drupal\Core\StringTranslation\StringTranslationTrait
+
 /**
  * Serverside validation of the Turnstile code.
  */
 
 class Turnstile {
+  /**
+   * Sets the initial URL
+   */
   const SITE_VERIFY_URL = 'https://challenges.cloudflare.com/turnstile/v0/siteverify';
 
   protected $attributes = [
-    'class' => 'h-captcha',
+    'class' => 'cf-turnstile',
     'data-sitekey' => '',
     'data-theme' => '',
     'data-size' => '',
@@ -20,7 +25,7 @@ class Turnstile {
   protected $siteKey = '';
   protected $secretKey = '';
   protected $errors = [];
-  private $success = false;
+  private $success = FALSE;
   private $validated;
   private $requestMethod;
 
@@ -31,7 +36,9 @@ class Turnstile {
 
     if (!empty($attributes) && is_array($attributes)) {
       foreach ($attributes as $name => $attribute) {
-        if (isset($this->attributes[$name])) $this->attributes[$name] = $attribute;
+        if (isset($this->attributes[$name])) {
+          $this->attributes[$name] = $attribute;
+        }
       }
     }
   }
@@ -42,7 +49,7 @@ class Turnstile {
    */
   public function getWidget($validation_function) {
     // Captcha requires TRUE to be returned in solution.
-    $widget['solution'] = true;
+    $widget['solution'] = TRUE;
     $widget['captcha_validate'] = $validation_function;
     $widget['form']['captcha_response'] = [
       '#type' => 'hidden',
@@ -51,7 +58,7 @@ class Turnstile {
 
     // As the validate callback does not depend on sid or solution, this
     // captcha type can be displayed on cached pages.
-    $widget['cacheable'] = true;
+    $widget['cacheable'] = TRUE;
 
     $widget['form']['turnstile_widget'] = [
       '#markup' => '<div' . $this->getAttributesString() . '></div>',
@@ -71,9 +78,9 @@ class Turnstile {
     ];
     $this->validated = $this->requestMethod->submit(self::SITE_VERIFY_URL, array_filter($query));
 
-    if (isset($this->validated->success) && $this->validated->success === true) {
+    if (isset($this->validated->success) && $this->validated->success === TRUE) {
       // Verified!
-      $this->success = true;
+      $this->success = TRUE;
     } else {
       $this->errors = $this->getResponseErrors();
     }
@@ -108,13 +115,13 @@ class Turnstile {
    */
   public function getErrorCodes() {
     $error_codes = [
-      'missing-input-secret' => t('The secret parameter was not passed.'),
-      'invalid-input-secret' => t('The secret parameter was invalid or did not exist.'),
-      'missing-input-response' => t('The response parameter was not passed.'),
-      'invalid-input-response' => t('The response parameter is invalid or has expired.'),
-      'bad-request' => t('The request was rejected because it was malformed.'),
-      'timeout-or-duplicate' => t('The response parameter has already been validated before.'),
-      'internal-error' => t('An internal error happened while validating the response. The request can be retried.'),
+      'missing-input-secret' => $this->t('The secret parameter was not passed.'),
+      'invalid-input-secret' => $this->t('The secret parameter was invalid or did not exist.'),
+      'missing-input-response' => $this->t('The response parameter was not passed.'),
+      'invalid-input-response' => $this->t('The response parameter is invalid or has expired.'),
+      'bad-request' => $this->t('The request was rejected because it was malformed.'),
+      'timeout-or-duplicate' => $this->t('The response parameter has already been validated before.'),
+      'internal-error' => $this->t('An internal error happened while validating the response. The request can be retried.'),
     ];
     return $error_codes;
   }

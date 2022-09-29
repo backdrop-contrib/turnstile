@@ -1,7 +1,6 @@
 <?php
 
 /**
- * @file
  * Custom Drupal 8 request method class for Turnstile.
  */
 
@@ -17,8 +16,10 @@ class Drupal8Post implements RequestMethod {
    *
    * @param array $params
    *   Request parameters.
+   * @param string $url
+   *   Request URL.
    *
-   * @return \stdClass
+   * @return object
    *   Body of the Turnstile response.
    */
   public function submit($url, array $params) {
@@ -26,10 +27,10 @@ class Drupal8Post implements RequestMethod {
       'headers' => [
         'Content-type' => 'application/x-www-form-urlencoded',
       ],
-      'body' => http_build_query($params,'','&'),
+      'body' => http_build_query($params, '', '&'),
       // Stop firing exception on response status code >= 300.
       // See http://docs.guzzlephp.org/en/stable/handlers-and-middleware.html
-      'http_errors' => false,
+      'http_errors' => FALSE,
     ];
     $response = \Drupal::httpClient()->post($url, $options);
 
@@ -48,4 +49,5 @@ class Drupal8Post implements RequestMethod {
 
     return json_decode($result);
   }
+  
 }
