@@ -9,7 +9,6 @@ use Drupal\turnstile\Turnstile\Drupal8Post;
 use Drupal\turnstile\Turnstile\Turnstile;
 use Drupal\Core\Url;
 use Drupal\Core\Routing\RouteMatchInterface;
-use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * Implements hook_captcha().
@@ -82,12 +81,12 @@ function turnstile_captcha_validation($solution, $response, $element, $form_stat
   $turnstile_site_key = $config->get('site_key');
   $turnstile_secret_key = $config->get('secret_key');
 
-  if (!isset($stack->getCurrentRequest()->request->get('cf-turnstile-response')) || empty($stack->getCurrentRequest()->request->get('cf-turnstile-response')) || empty($turnstile_secret_key)) {
+  if (!isset(\Drupal::request()->get('cf-turnstile-response')) || empty(\Drupal::request()->get('cf-turnstile-response')) || empty($turnstile_secret_key)) {
     return FALSE;
   }
 
   $captcha = new Turnstile($turnstile_site_key, $turnstile_secret_key, [], new Drupal8Post());
-  $captcha->validate($stack->getCurrentRequest()->request->get('cf-turnstile-response'), \Drupal::request()->getClientIp());
+  $captcha->validate(\Drupal::request()->get('cf-turnstile-response'), \Drupal::request()->getClientIp());
 
   if ($captcha->isSuccess()) {
     // Verified!
