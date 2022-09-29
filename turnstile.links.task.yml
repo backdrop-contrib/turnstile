@@ -1,4 +1,4 @@
-turnstyle.admin_settings_form_tab:
-  route_name: turnstyle.admin_settings_form
-  title: Turnstyle
+turnstile.admin_settings_form_tab:
+  route_name: turnstile.admin_settings_form
+  title: Turnstile
   base_route: captcha_settings
