@@ -5,7 +5,7 @@ namespace Drupal\turnstile\Turnstile;
 /**
  * Sends POST requests to the Turnstile service.
  */
-class Drupal8Post implements RequestMethod {
+class Drupal8Post implements RequestMethodInterface {
 
   /**
    * Submit the POST request with the specified parameters.
@@ -45,5 +45,5 @@ class Drupal8Post implements RequestMethod {
 
     return json_decode($result);
   }
-  
+
 }

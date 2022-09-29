@@ -5,13 +5,15 @@ namespace Drupal\turnstile\Turnstile;
 /**
  * Serverside validation of the Turnstile code.
  */
-
 class Turnstile {
   /**
-   * Sets the initial URL
+   * Sets the initial URL.
    */
   const SITE_VERIFY_URL = 'https://challenges.cloudflare.com/turnstile/v0/siteverify';
 
+  /**
+   * Sets the attributes
+   */
   protected $attributes = [
     'class' => 'cf-turnstile',
     'data-sitekey' => '',
@@ -20,14 +22,37 @@ class Turnstile {
     'data-tabindex' => 0,
   ];
 
+  /**
+   * Sets the site key.
+   */
   protected $siteKey = '';
+
+  /**
+   * Sets the secret key.
+   */
   protected $secretKey = '';
+
+  /**
+   * Sets the errors array.
+   */
   protected $errors = [];
+
+  /**
+   * Sets the success flag.
+   */
   private $success = FALSE;
+
+  /**
+   * Sets the validated flag.
+   */
   private $validated;
+
+  /**
+   * Sets the request method.
+   */
   private $requestMethod;
 
-  public function __construct($site_key, $secret_key, $attributes = [], RequestMethod $requestMethod = NULL) {
+  public function __construct($site_key, $secret_key, $attributes = [], RequestMethodInterface $requestMethod = NULL) {
     $this->siteKey = $site_key;
     $this->secretKey = $secret_key;
     $this->requestMethod = $requestMethod;
