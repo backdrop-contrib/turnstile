@@ -29,7 +29,7 @@ function turnstile_captcha($op, $captcha_type = '') {
 
         if (!empty($turnstile_site_key) && !empty($turnstile_secret_key)) {
           $attributes = [
-            'class' => 'cf-turnstile-,
+            'class' => 'cf-turnstile-response',
             'data-sitekey' => $turnstile_site_key,
             'data-theme' => $config->get('widget.theme'),
             'data-size' => $config->get('widget.size'),
