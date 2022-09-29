@@ -13,6 +13,7 @@ class Turnstile {
 
   /**
    * Sets the attributes.
+   * 
    * @var attributes
    */
   protected $attributes = [
