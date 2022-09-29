@@ -2,10 +2,14 @@
 
 namespace Drupal\turnstile\Turnstile;
 
+use Drupal\Core\StringTranslation\StringTranslationTrait;
+use Drupal\Core\StringTranslation\TranslationInterface;
+
 /**
  * Serverside validation of the Turnstile code.
  */
 class Turnstile {
+  use StringTranslationTrait;
   /**
    * Sets the initial URL.
    */
