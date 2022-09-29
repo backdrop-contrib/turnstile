@@ -1,9 +1,5 @@
 <?php
 
-/**
- * Custom Drupal 8 request method class for Turnstile.
- */
-
 namespace Drupal\turnstile\Turnstile;
 
 /**
@@ -14,10 +10,10 @@ class Drupal8Post implements RequestMethod {
   /**
    * Submit the POST request with the specified parameters.
    *
-   * @param array $params
-   *   Request parameters.
    * @param string $url
    *   Request URL.
+   * @param array $params
+   *   Request parameters.
    *
    * @return object
    *   Body of the Turnstile response.

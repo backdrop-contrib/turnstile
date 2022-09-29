@@ -113,9 +113,9 @@ function turnstile_help($route_name, RouteMatchInterface $route_match) {
 
       // Add a link to the Drupal.org project.
       $output .= '<p>';
-      $output .= t('Visit the <a href=":project_link">Turnstile project page</a> on Drupal.org for more information.',[
+      $output .= t('Visit the <a href=":project_link">Turnstile project page</a> on Drupal.org for more information.', [
         ':project_link' => 'https://www.drupal.org/project/turnstile',
-        ]);
+      ]);
       $output .= '</p>';
 
       return $output;

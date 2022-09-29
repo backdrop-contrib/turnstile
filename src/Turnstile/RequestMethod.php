@@ -1,11 +1,10 @@
 <?php
 
+namespace Drupal\turnstile\Turnstile;
+
 /**
  * Adds the appropriate RequestMethod.
  */
-
-namespace Drupal\turnstile\Turnstile;
-
 interface RequestMethod {
   /**
    * Submit the request with the specified parameters.
@@ -14,9 +13,10 @@ interface RequestMethod {
    *   The URL.
    * @param array $params
    *   Request parameters.
-   * @return \stdClass Body of the Turnstile response
+   * 
+   * @return object
+   *   Body of the Turnstile response
    */
-  
   public function submit($url, array $params);
   
 }

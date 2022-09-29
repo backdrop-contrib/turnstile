@@ -2,8 +2,6 @@
 
 namespace Drupal\turnstile\Turnstile;
 
-use \Drupal\Core\StringTranslation\StringTranslationTrait;
-
 /**
  * Serverside validation of the Turnstile code.
  */
@@ -29,7 +27,7 @@ class Turnstile {
   private $validated;
   private $requestMethod;
 
-  public function __construct($site_key, $secret_key, $attributes = [], RequestMethod $requestMethod = null) {
+  public function __construct($site_key, $secret_key, $attributes = [], RequestMethod $requestMethod = NULL) {
     $this->siteKey = $site_key;
     $this->secretKey = $secret_key;
     $this->requestMethod = $requestMethod;
@@ -81,7 +79,8 @@ class Turnstile {
     if (isset($this->validated->success) && $this->validated->success === TRUE) {
       // Verified!
       $this->success = TRUE;
-    } else {
+    }
+    else {
       $this->errors = $this->getResponseErrors();
     }
   }
@@ -138,4 +137,5 @@ class Turnstile {
     }
     return $attributes ? ' ' . implode(' ', $attributes) : '';
   }
+
 }
