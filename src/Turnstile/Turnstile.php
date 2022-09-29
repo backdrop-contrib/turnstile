@@ -2,7 +2,7 @@
 
 namespace Drupal\turnstile\Turnstile;
 
-use \Drupal\Core\StringTranslation\StringTranslationTrait
+use \Drupal\Core\StringTranslation\StringTranslationTrait;
 
 /**
  * Serverside validation of the Turnstile code.
