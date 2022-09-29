@@ -73,6 +73,7 @@ class Turnstile {
    * Build the Turnstile captcha form.
    *
    * @return mixed
+   *   The return value.
    */
   public function getWidget($validation_function) {
     // Captcha requires TRUE to be returned in solution.
@@ -97,6 +98,7 @@ class Turnstile {
    * Build the Turnstile validation mechanism.
    *
    * @return mixed
+   *   The return value.
    */
   public function validate($response_token, $remote_ip = '') {
     $query = [
@@ -119,6 +121,7 @@ class Turnstile {
    * Return the success flag.
    *
    * @return bool
+   *   The boolean.
    */
   public function isSuccess() {
     return $this->success;
@@ -128,6 +131,7 @@ class Turnstile {
    * Get the errors.
    *
    * @return mixed
+   *   The return value.
    */
   public function getErrors() {
     return $this->errors;
@@ -137,6 +141,7 @@ class Turnstile {
    * Get the response errors.
    *
    * @return mixed
+   *   The return value.
    */
   public function getResponseErrors() {
     // Error code reference, https://developers.cloudflare.com/turnstile/get-started/server-side-validation/
@@ -157,6 +162,7 @@ class Turnstile {
    * Return error codes.
    *
    * @return mixed
+   *   The return value.
    */
   public function getErrorCodes() {
     $error_codes = [
@@ -175,6 +181,7 @@ class Turnstile {
    * Get an attribute that's been processed.
    *
    * @return mixed
+   *   The return value.
    */
   public function getAttributesString() {
     $attributes = array_filter($this->attributes);
