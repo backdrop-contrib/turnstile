@@ -29,7 +29,7 @@ function turnstile_captcha($op, $captcha_type = '') {
 
         if (!empty($turnstile_site_key) && !empty($turnstile_secret_key)) {
           $attributes = [
-            'class' => 'cf-turnstile-response',
+            'class' => 'cf-turnstile',
             'data-sitekey' => $turnstile_site_key,
             'data-theme' => $config->get('widget.theme'),
             'data-size' => $config->get('widget.size'),
@@ -80,6 +80,8 @@ function turnstile_captcha_validation($solution, $response, $element, $form_stat
 
   $turnstile_site_key = $config->get('site_key');
   $turnstile_secret_key = $config->get('secret_key');
+
+  error_log(\Drupal::request()->get('cf-turnstile-response'));
 
   if (!\Drupal::request()->get('cf-turnstile-response') || empty(\Drupal::request()->get('cf-turnstile-response')) || empty($turnstile_secret_key)) {
     return FALSE;
