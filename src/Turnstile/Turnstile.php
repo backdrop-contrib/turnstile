@@ -25,36 +25,42 @@ class Turnstile {
 
   /**
    * Sets the site key.
+   *
    * @var siteKey
    */
   protected $siteKey = '';
 
   /**
    * Sets the secret key.
+   *
    * @var secretKey
    */
   protected $secretKey = '';
 
   /**
    * Sets the errors array.
+   *
    * @var errors
    */
   protected $errors = [];
 
   /**
    * Sets the success flag.
+   *
    * @var success
    */
   private $success = FALSE;
 
   /**
    * Sets the validated flag.
+   *
    * @var validated
    */
   private $validated;
 
   /**
    * Sets the request method.
+   *
    * @var requestMethod
    */
   private $requestMethod;
