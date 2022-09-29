@@ -53,7 +53,7 @@ class Turnstile {
   private $requestMethod;
 
   /**
-   * Constructor
+   * Constructor.
    */
   public function __construct($site_key, $secret_key, $attributes = [], RequestMethodInterface $requestMethod = NULL) {
     $this->siteKey = $site_key;
@@ -95,7 +95,7 @@ class Turnstile {
 
   /**
    * Build the Turnstile validation mechanism.
-   * 
+   *
    * @return mixed
    */
   public function validate($response_token, $remote_ip = '') {
@@ -117,7 +117,7 @@ class Turnstile {
 
   /**
    * Return the success flag.
-   * 
+   *
    * @return bool
    */
   public function isSuccess() {
@@ -126,7 +126,7 @@ class Turnstile {
 
   /**
    * Get the errors.
-   * 
+   *
    * @return mixed
    */
   public function getErrors() {
@@ -135,7 +135,7 @@ class Turnstile {
 
   /**
    * Get the response errors.
-   * 
+   *
    * @return mixed
    */
   public function getResponseErrors() {
@@ -155,7 +155,7 @@ class Turnstile {
 
   /**
    * Return error codes.
-   * 
+   *
    * @return mixed
    */
   public function getErrorCodes() {
@@ -173,7 +173,7 @@ class Turnstile {
 
   /**
    * Get an attribute that's been processed.
-   * 
+   *
    * @return mixed
    */
   public function getAttributesString() {
