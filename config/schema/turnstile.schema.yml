@@ -12,7 +12,7 @@ turnstile.settings:
       label: 'Secret key'
     turnstile_src:
       type: string
-      label: 'Turnstile javascript resource URL'
+      label: 'Turnstile JavaScript resource URL'
     widget:
       type: mapping
       label: 'Widget settings'

@@ -60,7 +60,7 @@ class TurnstileAdminSettingsForm extends ConfigFormBase {
       '#description' => $this->t('Default URL is ":url".', [':url' => 'https://challenges.cloudflare.com/turnstile/v0/api.js']),
       '#maxlength' => 200,
       '#required' => TRUE,
-      '#title' => $this->t('Turnstile javascript resource URL'),
+      '#title' => $this->t('Turnstile JavaScript resource URL'),
       '#type' => 'textfield',
     ];
 
@@ -72,7 +72,7 @@ class TurnstileAdminSettingsForm extends ConfigFormBase {
     ];
     $form['widget']['turnstile_theme'] = [
       '#default_value' => $config->get('widget.theme'),
-      '#description' => $this->t('Defines which theme to use for turnstile.'),
+      '#description' => $this->t('Defines which theme to use for Turnstile.'),
       '#options' => [
         'light' => $this->t('Light (default)'),
         'dark' => $this->t('Dark'),
@@ -102,6 +102,7 @@ class TurnstileAdminSettingsForm extends ConfigFormBase {
     $config
       ->set('site_key', $form_state->getValue('turnstile_site_key'))
       ->set('secret_key', $form_state->getValue('turnstile_secret_key'))
+      ->set('turnstile_src', $form_state->getValue('turnstile_src'))
       ->set('widget.theme', $form_state->getValue('turnstile_theme'))
       ->set('widget.tabindex', $form_state->getValue('turnstile_tabindex'))
       ->save();
