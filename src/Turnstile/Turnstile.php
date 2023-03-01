@@ -1,15 +1,11 @@
 <?php
 
-namespace Drupal\turnstile\Turnstile;
-
-use Drupal\Core\StringTranslation\StringTranslationTrait;
-use Drupal\Core\StringTranslation\TranslationInterface;
+namespace Turnstile;
 
 /**
  * Serverside validation of the Turnstile code.
  */
 class Turnstile {
-  use StringTranslationTrait;
   /**
    * Sets the initial URL.
    */
@@ -47,7 +43,7 @@ class Turnstile {
    *
    * @var errors
    */
-  protected $errors = [];
+  protected $errors = array();
 
   /**
    * Sets the success flag.
@@ -73,16 +69,14 @@ class Turnstile {
   /**
    * Constructor.
    */
-  public function __construct($site_key, $secret_key, $attributes = [], RequestMethodInterface $requestMethod = NULL) {
+  public function __construct($site_key, $secret_key, $attributes = array(), RequestMethod $requestMethod = NULL) {
     $this->siteKey = $site_key;
     $this->secretKey = $secret_key;
     $this->requestMethod = $requestMethod;
 
     if (!empty($attributes) && is_array($attributes)) {
       foreach ($attributes as $name => $attribute) {
-        if (isset($this->attributes[$name])) {
-          $this->attributes[$name] = $attribute;
-        }
+        if (isset($this->attributes[$name])) $this->attributes[$name] = $attribute;
       }
     }
   }
@@ -119,11 +113,11 @@ class Turnstile {
    *   The return value.
    */
   public function validate($response_token, $remote_ip = '') {
-    $query = [
+    $query = array(
       'secret' => $this->secretKey,
       'response' => $response_token,
       'remoteip' => $remote_ip,
-    ];
+    );
     $this->validated = $this->requestMethod->submit(self::SITE_VERIFY_URL, array_filter($query));
 
     if (isset($this->validated->success) && $this->validated->success === TRUE) {
@@ -163,7 +157,7 @@ class Turnstile {
    */
   public function getResponseErrors() {
     // Error code reference, https://developers.cloudflare.com/turnstile/get-started/server-side-validation/
-    $errors = [];
+    $errors = array();
     if (isset($this->validated->{'error-codes'}) && is_array($this->validated->{'error-codes'})) {
       $error_codes = $this->getErrorCodes();
       foreach ($this->validated->{'error-codes'} as $code) {
@@ -183,15 +177,15 @@ class Turnstile {
    *   The return value.
    */
   public function getErrorCodes() {
-    $error_codes = [
-      'missing-input-secret' => $this->t('The secret parameter was not passed.'),
-      'invalid-input-secret' => $this->t('The secret parameter was invalid or did not exist.'),
-      'missing-input-response' => $this->t('The response parameter was not passed.'),
-      'invalid-input-response' => $this->t('The response parameter is invalid or has expired.'),
-      'bad-request' => $this->t('The request was rejected because it was malformed.'),
-      'timeout-or-duplicate' => $this->t('The response parameter has already been validated before.'),
-      'internal-error' => $this->t('An internal error happened while validating the response. The request can be retried.'),
-    ];
+    $error_codes = array(
+      'missing-input-secret' => t('The secret parameter was not passed.'),
+      'invalid-input-secret' => t('The secret parameter was invalid or did not exist.'),
+      'missing-input-response' => t('The response parameter was not passed.'),
+      'invalid-input-response' => t('The response parameter is invalid or has expired.'),
+      'bad-request' => t('The request was rejected because it was malformed.'),
+      'timeout-or-duplicate' => t('The response parameter has already been validated before.'),
+      'internal-error' => t('An internal error happened while validating the response. The request can be retried.'),
+    );
     return $error_codes;
   }
 

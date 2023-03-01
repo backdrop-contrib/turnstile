@@ -1,44 +1,43 @@
 <?php
 
-namespace Drupal\turnstile\Turnstile;
+/**
+ * @file
+ * Custom Drupal 7 request method class for Turnstile.
+ */
+
+namespace Turnstile;
 
 /**
  * Sends POST requests to the Turnstile service.
  */
-class Drupal8Post implements RequestMethodInterface {
+class Drupal7Post implements RequestMethod {
 
   /**
    * Submit the POST request with the specified parameters.
    *
-   * @param string $url
-   *   Request URL.
    * @param array $params
    *   Request parameters.
    *
-   * @return object
+   * @return \stdClass
    *   Body of the Turnstile response.
    */
   public function submit($url, array $params) {
-    $options = [
-      'headers' => [
+    $options = array(
+      'headers' => array(
         'Content-type' => 'application/x-www-form-urlencoded',
-      ],
-      'body' => http_build_query($params, '', '&'),
-      // Stop firing exception on response status code >= 300.
-      // See http://docs.guzzlephp.org/en/stable/handlers-and-middleware.html
-      'http_errors' => FALSE,
-    ];
-    $response = \Drupal::httpClient()->post($url, $options);
+      ),
+      'method' => 'POST',
+      'data' => http_build_query($params, '', '&'),
+    );
+    $response = drupal_http_request($url, $options);
 
-    if ($response->getStatusCode() == 200) {
+    if ($response->code == 200 && isset($response->data)) {
       // The service request was successful.
-      $result = (string) $response->getBody();
-    }
-    elseif ($response->getStatusCode() < 0) {
+      $result = $response->data;
+    } elseif ($response->code < 0) {
       // Negative status codes typically point to network or socket issues.
       $result = '{"success": false, "error-codes": ["connection-failed"]}';
-    }
-    else {
+    } else {
       // Positive none 200 status code typically means the request has failed.
       $result = '{"success": false, "error-codes": ["bad-response"]}';
     }

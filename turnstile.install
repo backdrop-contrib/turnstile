@@ -1,0 +1,20 @@
+<?php
+
+/**
+ * Implements hook_install().
+ */
+function turnstile_install() {
+  variable_set('turnstile_src', 'https://challenges.cloudflare.com/turnstile/v0/api.js');
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function turnstile_uninstall() {
+  variable_del('turnstile_src');
+  variable_del('turnstile_site_key');
+  variable_del('turnstile_secret_key');
+  variable_del('turnstile_theme');
+  variable_del('turnstile_size');
+  variable_del('turnstile_tabindex');
+}

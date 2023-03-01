@@ -1,7 +1,0 @@
-site_key: ''
-secret_key: ''
-turnstile_src: 'https://challenges.cloudflare.com/turnstile/v0/api.js'
-widget:
-  theme: 'auto'
-  # size: ''
-  tabindex: 0
