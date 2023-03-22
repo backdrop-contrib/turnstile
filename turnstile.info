@@ -1,7 +1,10 @@
 name = "Turnstile"
-description = "Adds Cloudflare's Turnstile product as an option to the CAPTCHA module."
-core = "7.x"
-package = Spam control
+description = "Adds Cloudflare Turnstile as an option to the CAPTCHA module."
+backdrop = 1.x
+type = module
 dependencies[] = captcha
 configure = admin/config/people/captcha/turnstile
 
+package = Spam control
+tags[] = spam
+tags[] = antispam

@@ -1,11 +1,29 @@
 <?php
 
-require_once dirname(__FILE__) . '/src/Turnstile/Turnstile.php';
-require_once dirname(__FILE__) . '/src/Turnstile/RequestMethod.php';
-require_once dirname(__FILE__) . '/src/Turnstile/Drupal7Post.php';
-
+use Turnstile\BackdropPost;
 use Turnstile\Turnstile;
-use Turnstile\Drupal7Post;
+
+/**
+ * Implements hook_autoload_info().
+ */
+function turnstile_autoload_info() {
+  return array(
+    'Turnstile\Turnstile' => 'src/Turnstile/Turnstile.php',
+    'Turnstile\RequestMethod' => 'src/Turnstile/RequestMethod.php',
+    'Turnstile\BackdropPost' => 'src/Turnstile/BackdropPost.php',
+  );
+}
+
+/**
+ * Implements hook_config_info().
+ */
+function turnstile_config_info() {
+  $prefixes['turnstile.settings'] = array(
+    'label' => t('Turnstile settings'),
+    'group' => t('Configuration'),
+  );
+  return $prefixes;
+}
 
 /**
  * Implements hook_permission().
@@ -26,7 +44,7 @@ function turnstile_menu() {
   $items['admin/config/people/captcha/turnstile'] = array(
     'title' => 'Turnstile',
     'description' => 'Administer the Cloudflare Turnstile web service.',
-    'page callback' => 'drupal_get_form',
+    'page callback' => 'backdrop_get_form',
     'page arguments' => array('turnstile_admin_settings'),
     'access arguments' => array('administer turnstile'),
     'type' => MENU_LOCAL_TASK,
@@ -39,12 +57,14 @@ function turnstile_menu() {
 
 /**
  * Implements hook_captcha().
- * @param $op
+ *
+ * @param string $op
  * @param string $captcha_type
  * @return array
  */
 function turnstile_captcha($op, $captcha_type = '') {
   global $language;
+  $config = config('turnstile.settings');
 
   switch ($op) {
     case 'list':
@@ -53,33 +73,33 @@ function turnstile_captcha($op, $captcha_type = '') {
     case 'generate':
       $captcha = array();
       if ($captcha_type == 'Turnstile') {
-        $turnstile_site_key = variable_get('turnstile_site_key', '');
-        $turnstile_secret_key = variable_get('turnstile_secret_key', '');
+        $turnstile_site_key = $config->get('site_key');
+        $turnstile_secret_key = $config->get('secret_key');
 
         if (!empty($turnstile_site_key) && !empty($turnstile_secret_key)) {
           $attributes = array(
             'class' => 'cf-turnstile',
             'data-sitekey' => $turnstile_site_key,
-            'data-theme' => variable_get('turnstile_theme', ''),
-            'data-size' => variable_get('turnstile_size', ''),
-            'data-tabindex' => variable_get('turnstile_tabindex', 0),
+            'data-theme' => $config->get('theme'),
+            'data-size' => $config->get('size'),
+            'data-tabindex' => $config->get('tabindex'),
           );
 
           $turnstile = new Turnstile($turnstile_site_key, $turnstile_secret_key, $attributes);
           $captcha = $turnstile->getWidget('turnstile_captcha_validation');
 
           // Load the library
-          $turnstile_src = variable_get('turnstile_src', 'https://challenges.cloudflare.com/turnstile/v0/api.js');
+          $turnstile_src = $config->get('src');
           $data = array(
             '#tag' => 'script',
             '#value' => '',
             '#attributes' => array(
-              'src' => url($turnstile_src, array('query' => array('hl' => $language->language), 'absolute' => TRUE)),
+              'src' => url($turnstile_src, array('query' => array('hl' => $language->langcode), 'absolute' => TRUE)),
               'async' => 'async',
               'defer' => 'defer',
             ),
           );
-          drupal_add_html_head($data, 'turnstile_api');
+          backdrop_add_html_head($data, 'turnstile_api');
         } else {
           // Fallback to Math captcha as Turnstile is not configured.
           $captcha = captcha_captcha('generate', 'Math');
@@ -93,13 +113,14 @@ function turnstile_captcha($op, $captcha_type = '') {
  * CAPTCHA Callback; Validates the Turnstile code.
  */
 function turnstile_captcha_validation($solution, $response, $element, $form_state) {
-  $turnstile_site_key = variable_get('turnstile_site_key', '');
-  $turnstile_secret_key = variable_get('turnstile_secret_key', '');
+  $config = config('turnstile.settings');
+  $turnstile_site_key = $config->get('site_key');
+  $turnstile_secret_key = $config->get('secret_key');
   if (!isset($_POST['cf-turnstile-response']) || empty($_POST['cf-turnstile-response']) || empty($turnstile_secret_key)) {
     return false;
   }
 
-  $captcha = new Turnstile($turnstile_site_key, $turnstile_secret_key, array(), new Drupal7Post());
+  $captcha = new Turnstile($turnstile_site_key, $turnstile_secret_key, array(), new BackdropPost());
   $captcha->validate($_POST['cf-turnstile-response'], ip_address());
 
   if ($captcha->isSuccess()) {
@@ -124,10 +145,10 @@ function turnstile_help($section = 'admin/help#turnstile', $arg = NULL) {
       $output .= '<h3>' . t('About') . '</h3>';
       $output .= t("<p>Cloudflare Turnstile delivers frustration-free, CAPTCHA-free web experiences to website visitors - with just a simple snippet of free code.</p><p>What's more, Turnstile stops abuse and confirms visitors are real without the data privacy concerns or awful UX that CAPTCHAs thrust on users.</p>");
 
-      // Add a link to the Drupal.org project.
+      // Add a link to the backdropcms.org project.
       $output .= '<p>';
-      $output .= t('Visit the <a href="@project_link">Turnstile project page</a> on Drupal.org for more information.', array(
-        '@project_link' => 'https://www.drupal.org/project/turnstile',
+      $output .= t('Visit the <a href="@project_link">Turnstile project page</a> on backdropcms.org for more information.', array(
+        '@project_link' => 'https://www.backdropcms.org/project/turnstile',
       ));
       $output .= '</p>';
 

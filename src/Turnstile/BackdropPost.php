@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Custom Drupal 7 request method class for Turnstile.
+ * Custom Backdrop request method class for Turnstile.
  */
 
 namespace Turnstile;
@@ -10,7 +10,7 @@ namespace Turnstile;
 /**
  * Sends POST requests to the Turnstile service.
  */
-class Drupal7Post implements RequestMethod {
+class BackdropPost implements RequestMethod {
 
   /**
    * Submit the POST request with the specified parameters.
@@ -29,7 +29,7 @@ class Drupal7Post implements RequestMethod {
       'method' => 'POST',
       'data' => http_build_query($params, '', '&'),
     );
-    $response = drupal_http_request($url, $options);
+    $response = backdrop_http_request($url, $options);
 
     if ($response->code == 200 && isset($response->data)) {
       // The service request was successful.

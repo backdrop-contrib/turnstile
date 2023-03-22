@@ -13,8 +13,8 @@ class Turnstile {
 
   /**
    * Sets the attributes.
-   * 
-   * @var attributes
+   *
+   * @var array
    */
   protected $attributes = [
     'class' => 'cf-turnstile',
