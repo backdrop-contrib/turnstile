@@ -74,7 +74,7 @@ function turnstile_captcha($op, $captcha_type = '') {
       $captcha = array();
       if ($captcha_type == 'Turnstile') {
         $turnstile_site_key = $config->get('site_key');
-        $turnstile_secret_key = $config->get('secret_key');
+        $turnstile_secret_key = _turnstile_get_secret();
 
         if (!empty($turnstile_site_key) && !empty($turnstile_secret_key)) {
           $attributes = array(
@@ -115,7 +115,7 @@ function turnstile_captcha($op, $captcha_type = '') {
 function turnstile_captcha_validation($solution, $response, $element, $form_state) {
   $config = config('turnstile.settings');
   $turnstile_site_key = $config->get('site_key');
-  $turnstile_secret_key = $config->get('secret_key');
+  $turnstile_secret_key = _turnstile_get_secret();
   if (!isset($_POST['cf-turnstile-response']) || empty($_POST['cf-turnstile-response']) || empty($turnstile_secret_key)) {
     return false;
   }
@@ -156,4 +156,22 @@ function turnstile_help($section = 'admin/help#turnstile', $arg = NULL) {
 
     default:
   }
+}
+
+/**
+ * Helper function: retrieves the secret key and logs when there's a problem.
+ * Uses a static cache to decrease logging.
+ */
+function _turnstile_get_secret() {
+  $turnstile_secret_key = &backdrop_static(__FUNCTION__);
+  if (!isset($examples)) {
+    $turnstile_secret_key = settings_get('turnstile_secret_key', FALSE);
+    if (!$turnstile_secret_key) {
+      // Set a warning message and fall-back to configuration.
+      $message = t('A Turnstile secret key is saved in configuration. Move this to <code>$settings</code> in <code>settings.local.php.</code>');
+      watchdog('turnstile', $message, WATCHDOG_WARNING);
+      $turnstile_secret_key = config_get('turnstile.settings', 'secret_key');
+    }
+  }
+  return $turnstile_secret_key;
 }
