@@ -7,6 +7,22 @@ function turnstile_admin_settings() {
   $config = config('turnstile.settings');
 
   $form['#config'] = 'turnstile.settings';
+
+  $help = '';
+  $help .= '<h3>' . t('About') . '</h3>';
+  $help .= t("<p>Cloudflare Turnstile delivers frustration-free, CAPTCHA-free web experiences to website visitors - with just a simple snippet of free code.</p><p>What's more, Turnstile stops abuse and confirms visitors are real without the data privacy concerns or awful UX that CAPTCHAs thrust on users.</p>");
+
+  $help .= '<p>';
+  $help .= t('Visit the <a href="@project_link">Turnstile project page</a> on backdropcms.org for more information.', array(
+    '@project_link' => 'https://www.backdropcms.org/project/turnstile',
+  ));
+  $help .= '</p>';
+
+  $form['help'] = array(
+    '#type' => 'help',
+    '#markup' => $help,
+  );
+
   $form['general'] = [
     '#type' => 'details',
     '#summary' => t('General settings'),
@@ -15,7 +31,7 @@ function turnstile_admin_settings() {
 
   $form['general']['site_key'] = [
     '#default_value' => $config->get('site_key'),
-    '#description' => t('The site key given to you when you <a href="@url">register for Turnstile</a>.',  array('@url' => 'https://cloudflare.com')),
+    '#description' => t('The site key given to you when you <a href="@url">register for Turnstile</a>.', array('@url' => 'https://cloudflare.com')),
     '#maxlength' => 50,
     '#required' => TRUE,
     '#title' => t('Site key'),
@@ -24,7 +40,7 @@ function turnstile_admin_settings() {
 
   $form['general']['secret_key'] = [
     '#default_value' => $config->get('secret_key'),
-    '#description' => t('The secret key given to you when you <a href="@url">register for Turnstile</a>.', array('@url' => 'https://cloudflare.com')),
+    '#description' => t('The secret key given to you when you <a href="@url">register for Turnstile</a>. For security, place this key in <code>settings.local.php</code> instead saving with this form. Use the format: <code>$config[\'turnstile.settings\'][\'secret_key\'] = "12345";</code>', array('@url' => 'https://cloudflare.com')),
     '#maxlength' => 50,
     '#required' => TRUE,
     '#title' => t('Secret key'),
