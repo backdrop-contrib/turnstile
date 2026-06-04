@@ -134,26 +134,3 @@ function turnstile_captcha_validation($solution, $response, $element, $form_stat
   return false;
 }
 
-/**
- * Implements hook_help().
- */
-function turnstile_help($section = 'admin/help#turnstile', $arg = NULL) {
-  switch ($section) {
-
-    case 'admin/help#turnstile':
-      $output = '';
-      $output .= '<h3>' . t('About') . '</h3>';
-      $output .= t("<p>Cloudflare Turnstile delivers frustration-free, CAPTCHA-free web experiences to website visitors - with just a simple snippet of free code.</p><p>What's more, Turnstile stops abuse and confirms visitors are real without the data privacy concerns or awful UX that CAPTCHAs thrust on users.</p>");
-
-      // Add a link to the backdropcms.org project.
-      $output .= '<p>';
-      $output .= t('Visit the <a href="@project_link">Turnstile project page</a> on backdropcms.org for more information.', array(
-        '@project_link' => 'https://www.backdropcms.org/project/turnstile',
-      ));
-      $output .= '</p>';
-
-      return $output;
-
-    default:
-  }
-}
